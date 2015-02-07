@@ -1,5 +1,8 @@
 #include "process.h"
+#include "utility.h"
 #include <stdio.h>
+/* forward declaration */
+int vm_watch_exit(endpoint_t);
 
 /* List of observed processes */
 static List observed_processes;

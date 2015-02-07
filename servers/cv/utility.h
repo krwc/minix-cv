@@ -7,9 +7,9 @@
 void tell_process(endpoint_t endpoint, int message);
 
 #if defined(DEBUG)
-#define debug(fmt, ...) printf(fmt, __VA_ARGS__)
+#define debug(...) printf(__VA_ARGS__)
 #else
-#define debug(fmt, ...) 
+#define debug(...) 
 #endif
 
 #endif
