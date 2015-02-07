@@ -1,6 +1,3 @@
-/* if DEBUG is defined, cv is verbose */
-#define DEBUG
-
 #include "inc.h"
 #include <minix/cv.h>
 
