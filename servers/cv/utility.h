@@ -4,6 +4,9 @@
 #include <minix/endpoint.h>
 #include <stdio.h>
 
+/* if defined, cv is quite verbose */
+#define DEBUG
+
 void tell_process(endpoint_t endpoint, int message);
 
 #if defined(DEBUG)
