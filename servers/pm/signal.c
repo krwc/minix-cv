@@ -37,23 +37,6 @@
 #include "mproc.h"
 #include "param.h"
 
-static int process_lookup(const char* name, endpoint_t* value) {
-    message m;
-    size_t len_key;
-
-    len_key = strlen(name)+1;
-
-    m.RS_NAME = (char *) __UNCONST(name);
-    m.RS_NAME_LEN = len_key;
-
-    if (_syscall(RS_PROC_NR, RS_LOOKUP, &m) != -1) {
-        *value = m.RS_ENDPOINT;
-        return OK;
-    }
-
-    return -1;
-}
-
 static void tell_cv(endpoint_t process, int type) {
     static endpoint_t cv_ep = 0;
     message m;
@@ -65,11 +48,10 @@ static void tell_cv(endpoint_t process, int type) {
     // Ignore self-notify
     if (process != cv_ep) {
         // Only if cv is running
-        if (process_lookup("cv", &cv_ep) == 0 && cv_ep) {
+        if (minix_rs_lookup("cv", &cv_ep) == 0 && cv_ep)
             asynsend3(cv_ep, &m, AMF_NOREPLY);
-        } else {
+        else
             cv_ep = 0;
-        }
     }
 }
 
