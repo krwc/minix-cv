@@ -1,3 +1,6 @@
+/* if DEBUG is defined, cv is verbose */
+#define DEBUG
+
 #include "inc.h"
 #include <minix/cv.h>
 
@@ -21,23 +24,28 @@ void broadcast(int cond_var_id) {
     broadcast_cond_var(cond_var_id);
 }
 
-int main(int argc, char** argv)
-{
+void init() {
     sef_local_startup();
     mutex_init();
     process_init();
     condition_vars_init();
+}
 
+int main(int argc, char** argv)
+{
     message m;
 
-    printf("CV: started, PM_PROC_NR=%d\n", PM_PROC_NR);
+    /* initialize */
+    init();    
+    
+    debug("%s", "CV: started\n");
     while (TRUE) {
         int result;
         int who;
         int type;
 
         if ((result = sef_receive(ANY, &m)) != OK) {
-            printf("CV: sef_receive failed - %d\n", result);
+            debug("CV: sef_receive failed - %d\n", result);
             continue;
         }
         who  = m.m_source;
@@ -45,7 +53,7 @@ int main(int argc, char** argv)
         
         if (type & NOTIFY_MESSAGE) {
             if (who == PM_PROC_NR && is_process_observed(m.m1_i2)) {
-                printf("PM sent info about process %d, type %d\n", m.m1_i2, m.m1_i1);
+                debug("CV: pm told us %d about process %d\n", m.m1_i1, m.m1_i2);
                 endpoint_t process = m.m1_i2;
 
                 switch (m.m1_i1) {
@@ -66,7 +74,7 @@ int main(int argc, char** argv)
                     unregister_cond_var(process);
                     break;
                 default:
-                    printf("CV: cos stalo sie z procesem %d\n", process);
+                    debug("CV: received unexpected message.");
                     break;
                 }
             }
@@ -88,7 +96,7 @@ int main(int argc, char** argv)
             tell_process(who, MSG_DONE);
             break;
         default:
-            printf("CV: received unknown command - %d\n", type);
+            debug("CV: received unknown command - %d\n", type);
             break;
         }
     }

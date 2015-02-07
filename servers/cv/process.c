@@ -17,7 +17,7 @@ bool is_process_observed(endpoint_t process) {
 }
 
 void start_observation(endpoint_t process) {
-    printf("start_observation(): %d\n", process);
+    debug("start_observation(): proc=%d\n", process);
     vm_watch_exit(process);
     list_push_back(&observed_processes, &process);
 }
@@ -26,7 +26,7 @@ void stop_observation(endpoint_t process) {
     ListNode* node = list_find(&observed_processes, &process, processes_equal);
 
     if (node) {
-        printf("stop_observation(): %d\n", process);
+        debug("stop_observation(): proc=%d\n", process);
         list_remove(node);
     }
 }

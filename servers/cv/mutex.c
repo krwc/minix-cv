@@ -66,7 +66,7 @@ void register_mutex(endpoint_t owner, int mutex_id) {
     else if (is_mutex_owned(mutex_id))
         enqueue_request(owner, mutex_id);
     else {
-        printf("register_mutex(): adding (%d, %d)\n", owner, mutex_id);
+        debug("register_mutex(): proc=%d, mutex=%d\n", owner, mutex_id);
         list_push_back(&mutexes_owned, &mutex);
 
         /* tell process about mutex being acquired */
@@ -80,7 +80,7 @@ bool unregister_mutex(endpoint_t owner, int mutex_id) {
     mutex.id = mutex_id;
     ListNode* node = list_find(&mutexes_owned, &mutex, mutex_equal);
     if (node) {
-        printf("unregister_mutex(): removing (%d, %d)\n", owner, mutex_id);
+        debug("unregister_mutex(): proc=%d, mutex=%d\n", owner, mutex_id);
         list_remove(node);
         
         /* tell process (if it is alive, otherwise info about deadlock will occur) */
@@ -108,7 +108,7 @@ void enqueue_request(endpoint_t owner, int mutex_id) {
     Mutex mutex;
     mutex.owner = owner;
     mutex.id = mutex_id;
-    printf("enqueue_request(): (%d, %d)\n", owner, mutex_id);    
+    debug("enqueue_request(): proc=%d, mutex=%d\n", owner, mutex_id);
     list_push_back(&mutexes_requested, &mutex);
 }
 
@@ -125,7 +125,7 @@ endpoint_t dequeue_request(int mutex_id) {
     if (node == NULL)
         return 0;
     requesting_proc = ((Mutex*)node->data)->owner;
-    printf("dequeue_request(): %d\n", mutex_id);
+    debug("dequeue_request(): mutex=%d\n", mutex_id);
     list_remove(node);
     return requesting_proc;
 }
@@ -143,8 +143,9 @@ void remove_all_requests_by_owner(endpoint_t process) {
 
         node = next;
     }
-    /* now we know process does not request any locks, and 
-     * if it does not own any locks either then we can stop observation
+    /**
+     * Now process does not any pending requests, and we can stop observing it
+     * if it does not have any locks either 
      */
     if (!is_owning_mutexes(process))
         stop_observation(process);

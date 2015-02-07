@@ -25,10 +25,9 @@ int cs_lock(int mutex_id)
         ret = _syscall(get_cv_id(), CV_LOCK, &m);
         
         /* signal to be handled, we're trying again */
-        if (m.m_type == MSG_SIGNAL) {
-            puts("process got signaled");
+        if (m.m_type == MSG_SIGNAL)
             continue;
-        } else
+        else
             break;
     }
     return ret;
@@ -38,8 +37,12 @@ int cs_unlock(int mutex_id)
 {
     message m;
     m.m1_i1  = mutex_id;
-
-    return _syscall(get_cv_id(), CV_UNLOCK, &m);
+    
+    if (_syscall(get_cv_id(), CV_UNLOCK, &m) == MSG_ERROR) {
+        errno = EPERM;
+        return -1;
+    }
+    return 0;   
 }
 
 int cs_wait(int cond_var_id, int mutex_id) 

@@ -15,7 +15,7 @@ SRCS+= 	accept.c access.c bind.c brk.c sbrk.c m_closefrom.c getsid.c \
 	setgid.c settimeofday.c setuid.c shmat.c shmctl.c shmget.c stime.c \
 	vectorio.c shutdown.c sigaction.c sigpending.c sigreturn.c sigsuspend.c\
 	sigprocmask.c socket.c socketpair.c stat.c statvfs.c symlink.c \
-	clipboard.c sync.c syscall.c sysuname.c truncate.c umask.c unlink.c write.c \
+	sync.c syscall.c sysuname.c truncate.c umask.c unlink.c write.c \
 	_exit.c _ucontext.c environ.c __getcwd.c vfork.c sizeup.c init.c cs.c
 
 # Minix specific syscalls.

@@ -12,7 +12,7 @@ void condition_vars_init() {
 
 void register_cond_var(endpoint_t proc, int cond_var_id) {
     ConditionVar cvar;
-    printf("register_cond_var(%d, %d)\n", proc, cond_var_id);
+    debug("register_cond_var(): proc=%d, cond_var_id=%d\n", proc, cond_var_id);
     cvar.id = cond_var_id;
     cvar.proc = proc;
     list_push_back(&condition_vars, &cvar);
@@ -28,7 +28,7 @@ void unregister_cond_var(endpoint_t proc) {
         var = node->data;
 
         if (var->proc == proc) {
-            printf("unregister_cond_var(): removed (%d, %d)\n", proc, var->id);
+            debug("unregister_cond_var(): proc=%d, cond_var_id=%d\n", proc, var->id);
             list_remove(node);
         }
         node = next;
